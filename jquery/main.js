@@ -37,7 +37,6 @@
 	peopleWrap.on("click", "btn", function(event){
 		var target = $(event.target);
 		var id = parseInt(target.closest("li").attr("data-id"), 10);
-		var data = target.closest("li").data();
 		var command = target.attr("class");
 
 		if(command === "delete"){
@@ -55,9 +54,7 @@
 		var index = people.indexOf(person);
 
 		people.splice(index, 1);
-
 		peopleWrap.find("#person_" + id).remove();
-
 		updateJsonView();
 	}
 
@@ -75,9 +72,9 @@
 		person.lastName = editFormWrap.find("#editLastName").val();
 
 		updatePerson(id, person);
-		updateJsonView();
 		
 		editFormWrap.empty();
+		updateJsonView();
 	});
 
 	function updatePerson(id, person){
