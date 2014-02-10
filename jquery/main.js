@@ -1,17 +1,20 @@
 (function(){
 	var peopleWrap = $("#people"); // ul element to wrap
 	var editFormWrap = $("#editForm");
-	var people; //data model
+
+	var people, toEdit; //data model
+
 	var personTmpl = 	"<li id='person_{{id}}' data-id='{{id}}' class='person'>\
-							<span style='float:right' ><btn class='edit'>edit</btn> <btn class='delete'>delete</btn></span>\
-							{{id}} - {{firstName}} {{lastName}}\
+							<span style='float:right' ><btn class='edit'>edit</btn>&nbsp;&nbsp;<btn class='delete'>delete</btn></span>\
+							{{firstName}} {{lastName}}\
 						</li>";
-	var renderPerson;
+	
 	var editFormTmpl = "<form>\
 							<label for='editFirstName'>First Name:</label> <input type='text' id='editFirstName' value='{{firstName}}' /><br>\
 							<label for='editLastName'>Last Name:</label> <input type='text'  id='editLastName' value='{{lastName}}' /><br>\
 							<button type='button' data-id='{{id}}' class='apply btn btn-primary'>apply</button>\
 						</form>";
+	var renderPerson;
 	var renderEditForm;
 
 	_.templateSettings = {
@@ -59,33 +62,64 @@
 	}
 
 	function Edit(id){
-		var person = _.where(people, { "id" : id })[0];
-		editFormWrap.html( renderEditForm(person) );
-	}
 
+		if(typeof id === 'undefined'){
+			toEdit = {
+				id : Date.now(),
+				firstName : "",
+				lastName : ""
+			};
+		} else {
+			toEdit = _.where(people, { "id" : id })[0];
+		}
+
+		editFormWrap.html( renderEditForm(toEdit) );
+	}
 
 	editFormWrap.on("click", "button.apply", function(event){
 		var id = $(this).data("id");
 		var person = _.where(people, {"id" : parseInt(id, 10)})[0];
 
-		person.firstName = editFormWrap.find("#editFirstName").val();
-		person.lastName = editFormWrap.find("#editLastName").val();
+		toEdit.firstName = editFormWrap.find("#editFirstName").val();
+		toEdit.lastName = editFormWrap.find("#editLastName").val();
 
-		updatePerson(id, person);
-		
-		editFormWrap.empty();
+		//updateModel
+		if(typeof person === 'undefined'){
+			person = toEdit;
+			people.push(toEdit); // add if new
+		} else {
+			person = toEdit;
+		}
+
+		toEdit = null;
+
+		//updateView
+		updatePersonView(id, person);
+
 		updateJsonView();
+
+		editFormWrap.empty();
 	});
 
-	function updatePerson(id, person){
+
+	$("a.addPerson").click(function(event){
+		event.preventDefault();
+		Edit();
+	});
+
+	function updatePersonView(id, person){
 		var oldView = peopleWrap.find("#person_" + id);
 		var newView = $(renderPerson(person));
+
+		if(oldView.length === 0){
+			peopleWrap.append(newView);
+		}
 
 		oldView.replaceWith(newView);
 	}
 
 	function updateJsonView(){
-		$("#jsonView").text( JSON.stringify(people, null, "	") );
+		$("#jsonView").text( JSON.stringify(people, null, "  ") );
 	}
 
 }());

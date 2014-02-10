@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>jQuery To Angular</title>
+	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+	<div class="container">
+		<header><h1>Angular</h1></header>
+		<div class="row" ng-controller="PeopleCntrl">
+			<div id="app" class='col-md-5'>
+				<ul>
+					<li ng-repeat="person in people" class='person'>
+						<span style='float:right' >
+							<btn class='edit' ng-click='editPerson(person)'>edit</btn>&nbsp;&nbsp;<btn class='delete' ng-click='deletePerson(person)'>delete</btn>
+						</span>
+						{{person.firstName}} {{person.lastName}}
+					</li>
+				</ul>
+				<div style="text-align:right">
+					<a href ng-click="editPerson()">Add</a>
+				</div>
+				<div ng-if="toEdit">
+					<h3>Edit/Add</h3>
+					<form>
+						<label for='editFirstName'>First Name:</label> <input type='text' ng-model="toEdit.firstName" id='editFirstName' value='{{toEdit.firstName}}' /><br>
+						<label for='editLastName'>Last Name:</label> <input type='text'  ng-model="toEdit.lastName" id='editLastName' value='{{toEdit.lastName}}' /><br>
+						<button type='button' data-id='{{id}}' class='apply btn btn-primary' ng-click='apply(toEdit)'>apply</button>
+					</form>
+				</div>
+			</div>
+			<div class="col-md-2">&nbsp;</div>
+			<div class="col-md-5">
+				<pre>{{people | json}}</pre>
+			</div>
+		</div>
+	</div>
+<script src="../bower_components/jquery/jquery.min.js"></script>
+<script src="../bower_components/lodash/dist/lodash.js"></script>
+<script src="../bower_components/angular/angular.js"></script>
+<script src="main.js"></script>
+
+<script>
+	angular.element(document).ready(function() {
+		angular.bootstrap(document, ['people']);
+	});
+</script>
+</body>
+</html>
