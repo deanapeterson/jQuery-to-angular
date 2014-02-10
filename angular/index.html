@@ -15,7 +15,8 @@
 				<ul>
 					<li ng-repeat="person in people" class='person'>
 						<span style='float:right' >
-							<btn class='edit' ng-click='editPerson(person)'>edit</btn>&nbsp;&nbsp;<btn class='delete' ng-click='deletePerson(person)'>delete</btn>
+							<btn class='edit' ng-click='editPerson(person)'>edit</btn>&nbsp;&nbsp;
+							<btn class='delete' ng-click='deletePerson(person)'>delete</btn>
 						</span>
 						{{person.firstName}} {{person.lastName}}
 					</li>

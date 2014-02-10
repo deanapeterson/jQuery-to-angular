@@ -1,6 +1,6 @@
 "use strict";
 
-var module = angular.module("people", []); //create module named 'people' without any angular dependencies
+var module = angular.module("people", ["ngRouter"]); //create module named 'people' without any angular dependencies
 
 module.controller("PeopleCntrl", function($scope, $http){
 	$scope.people = [];
@@ -38,5 +38,11 @@ module.controller("PeopleCntrl", function($scope, $http){
 
 		$scope.toEdit = null;
 	};
+
+
+	$scope.$watch("people", function(){
+
+
+	}, true)
 
 });

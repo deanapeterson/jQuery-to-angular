@@ -1,6 +1,7 @@
 (function(){
-	var peopleWrap = $("#people"); // ul element to wrap
-	var editFormWrap = $("#editForm");
+	//store references to DOM Views
+	var peopleView = $("#people"); // ul element to wrap
+	var editFormView = $("#editForm");
 
 	var people, toEdit; //data model
 
@@ -14,16 +15,18 @@
 							<label for='editLastName'>Last Name:</label> <input type='text'  id='editLastName' value='{{lastName}}' /><br>\
 							<button type='button' data-id='{{id}}' class='apply btn btn-primary'>apply</button>\
 						</form>";
-	var renderPerson;
-	var renderEditForm;
+	var renderPersonView;
+	var renderEditFormView;
 
 	_.templateSettings = {
 		interpolate: /\{\{(.+?)\}\}/g
 	};
 
-	renderPerson = _.template(personTmpl);
-	renderEditForm = _.template(editFormTmpl);
+	renderPersonView = _.template(personTmpl);
+	renderEditFormView = _.template(editFormTmpl);
 
+
+	//
 	$.getJSON("../data/people.json", function(data){
 		people = data;
 		renderPeople();
@@ -31,13 +34,13 @@
 
 	function renderPeople(){
 		$.each(people, function(index, person){
-			peopleWrap.append( $(renderPerson(person)).data(person) );
+			peopleView.append( $(renderPersonView(person)).data(person) );
 		});
 
 		updateJsonView();
 	}
 
-	peopleWrap.on("click", "btn", function(event){
+	peopleView.on("click", "btn", function(event){
 		var target = $(event.target);
 		var id = parseInt(target.closest("li").attr("data-id"), 10);
 		var command = target.attr("class");
@@ -57,7 +60,7 @@
 		var index = people.indexOf(person);
 
 		people.splice(index, 1);
-		peopleWrap.find("#person_" + id).remove();
+		peopleView.find("#person_" + id).remove();
 		updateJsonView();
 	}
 
@@ -73,15 +76,15 @@
 			toEdit = _.where(people, { "id" : id })[0];
 		}
 
-		editFormWrap.html( renderEditForm(toEdit) );
+		editFormView.html( renderEditFormView(toEdit) );
 	}
 
-	editFormWrap.on("click", "button.apply", function(event){
+	editFormView.on("click", "button.apply", function(event){
 		var id = $(this).data("id");
 		var person = _.where(people, {"id" : parseInt(id, 10)})[0];
 
-		toEdit.firstName = editFormWrap.find("#editFirstName").val();
-		toEdit.lastName = editFormWrap.find("#editLastName").val();
+		toEdit.firstName = editFormView.find("#editFirstName").val();
+		toEdit.lastName = editFormView.find("#editLastName").val();
 
 		//updateModel
 		if(typeof person === 'undefined'){
@@ -98,7 +101,7 @@
 
 		updateJsonView();
 
-		editFormWrap.empty();
+		editFormView.empty();
 	});
 
 
@@ -108,11 +111,11 @@
 	});
 
 	function updatePersonView(id, person){
-		var oldView = peopleWrap.find("#person_" + id);
-		var newView = $(renderPerson(person));
+		var oldView = peopleView.find("#person_" + id);
+		var newView = $(renderPersonView(person));
 
 		if(oldView.length === 0){
-			peopleWrap.append(newView);
+			peopleView.append(newView);
 		}
 
 		oldView.replaceWith(newView);
